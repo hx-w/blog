@@ -1,9 +1,9 @@
 export const SITE = {
   website: "https://blog.scubot.com", // 替换为你部署后的 Netlify 域名
-  author: "carol",
+  author: "Carol",
   profile: "https://github.com/hx-w",
-  desc: "think & write",
-  title: "carol blog",
+  desc: "口腔医疗设计技术、工程与创业笔记",
+  title: "Carol's Blog",
   ogImage: "astropaper-og.jpg",
   lightAndDarkMode: true,
   postPerIndex: 4,

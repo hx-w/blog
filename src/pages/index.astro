@@ -24,7 +24,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
   <main id="main-content" data-layout="index" class="app-layout">
     <section id="hero" class:list={["pt-8 pb-6", "border-b border-border"]}>
       <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
-        你好，欢迎来到我的博客
+        这里用来记记录一些好玩的内容
       </h1>
       <a
         target="_blank"
@@ -42,24 +42,23 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
       </a>
 
       <p>
-        这是一个基于 AstroPaper 的中文博客，默认支持响应式布局、SEO、无障碍访问、
-        深浅色模式与全文搜索，适合作为个人技术博客或内容站点的起点。
+        最近在做口腔医疗设计相关的工作。平时会遇到不少具体问题：流程哪里别扭，工具哪里不顺手，技术到底能不能帮上忙。碰到有意思的，就记下来。
       </p>
       <p class="mt-2">
-        你可以阅读文章，或查看
+        有时是工程化的思考，有时是图形学和几何处理的内容，有时只是一些不大不小的折腾记录。大部分内容没什么宏大主题，主要图个好玩。更详细的内容在
         <LinkButton
           class="underline decoration-dashed underline-offset-4 hover:text-accent"
           href="/about"
         >
           关于页面
         </LinkButton>
-        了解更多。
+        。
       </p>
       {
         // only display if at least one social link is enabled
         SOCIALS.length > 0 && (
           <div class="mt-4 flex max-sm:flex-col sm:items-center">
-            <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">社交链接：</div>
+            <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">到处看看：</div>
             <Socials />
           </div>
         )

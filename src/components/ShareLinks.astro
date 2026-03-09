@@ -1,0 +1,365 @@
+---
+import type { ShareLink } from "@/constants";
+import { SHARE_LINKS } from "@/constants";
+import {
+  buildShareHref,
+  createSharePayload,
+  getShareDialogContent,
+} from "@/utils/share";
+import LinkButton from "./LinkButton.astro";
+
+type Props = {
+  title: string;
+  description: string;
+  ogImage?: string;
+};
+
+const { title, description, ogImage } = Astro.props;
+const shareUrl = Astro.url.href;
+const payload = createSharePayload({
+  title,
+  description,
+  url: shareUrl,
+  ogImageUrl: ogImage,
+});
+---
+
+{
+  SHARE_LINKS.length > 0 && (
+    <section
+      data-share-root
+      data-share-title={payload.title}
+      data-share-description={payload.description}
+      data-share-url={payload.url}
+      data-share-og-image={payload.ogImageUrl ?? ""}
+      class="flex flex-col gap-3"
+    >
+      <div class="flex flex-none flex-col gap-1 md:items-start">
+        <span class="italic">分享这篇文章：</span>
+        <div class="text-center">
+          {SHARE_LINKS.map((social: ShareLink) =>
+            social.type === "url" ? (
+              <LinkButton
+                href={buildShareHref(social.href, shareUrl)}
+                class="scale-90 p-2 hover:rotate-6 sm:p-1"
+                title={social.linkTitle}
+              >
+                <social.icon class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110" />
+                <span class="sr-only">{social.linkTitle}</span>
+              </LinkButton>
+            ) : (
+              <button
+                type="button"
+                class="group inline-flex scale-90 items-center gap-1 p-2 hover:text-accent hover:rotate-6 sm:p-1"
+                title={social.linkTitle}
+                data-share-target={social.action}
+              >
+                <social.icon class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110" />
+                <span class="sr-only">{social.linkTitle}</span>
+              </button>
+            )
+          )}
+        </div>
+      </div>
+
+      <dialog
+        data-share-dialog
+        class="w-[min(34rem,calc(100vw-2rem))] rounded-2xl border border-border bg-background p-0 text-left text-foreground shadow-2xl backdrop:bg-black/35"
+      >
+        <div class="border-b border-border px-5 py-4">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 data-share-dialog-title class="text-lg font-semibold">
+                {getShareDialogContent("wechat", false).title}
+              </h3>
+              <p
+                data-share-dialog-description
+                class="mt-2 text-sm leading-6 text-foreground/80"
+              >
+                {getShareDialogContent("wechat", false).description}
+              </p>
+            </div>
+            <button
+              type="button"
+              class="rounded-full border border-border p-2 text-sm leading-none hover:text-accent"
+              data-share-close
+              aria-label="关闭分享面板"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-4 px-5 py-5">
+          <div data-share-dialog-actions class="flex flex-wrap gap-3"></div>
+
+          <div data-share-qrcode-wrap hidden class="space-y-3">
+            <div class="flex justify-center rounded-2xl border border-dashed border-border bg-muted/30 p-4">
+              <img
+                data-share-qrcode
+                alt="当前文章二维码"
+                width="220"
+                height="220"
+                class="size-[220px] rounded-xl bg-white p-3"
+              />
+            </div>
+            <p class="text-sm text-foreground/75">
+              用微信扫一扫可以直接在手机里打开这篇文章。
+            </p>
+          </div>
+
+          <p
+            data-share-feedback
+            class="min-h-6 text-sm leading-6 text-foreground/70"
+          ></p>
+        </div>
+      </dialog>
+    </section>
+  )
+}
+
+<script>
+  import QRCode from "qrcode";
+  import {
+    createOgImageFile,
+    createSharePayload,
+    getFallbackActions,
+    getShareDialogContent,
+    isFileShareSupported,
+  } from "@/utils/share";
+
+  type ShareTarget = "wechat" | "xiaohongshu";
+  type ShareActionId =
+    | "system-share"
+    | "share-image"
+    | "copy-link"
+    | "show-qrcode";
+
+  function isWechatBrowser() {
+    return /MicroMessenger/i.test(navigator.userAgent);
+  }
+
+  async function copyText(text: string) {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "absolute";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  function createActionButton(label: string, actionId: ShareActionId) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.shareDialogAction = actionId;
+    button.className =
+      "rounded-full border border-border px-4 py-2 text-sm font-medium hover:text-accent";
+    button.textContent = label;
+    return button;
+  }
+
+  async function downloadOgImage(ogImageUrl: string) {
+    const response = await fetch(ogImageUrl);
+    if (!response.ok) {
+      throw new Error("下载卡片图失败");
+    }
+
+    const blob = await response.blob();
+    const downloadUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = downloadUrl;
+    anchor.download = "share-card.png";
+    anchor.click();
+    URL.revokeObjectURL(downloadUrl);
+  }
+
+  async function setupShareRoot(root: HTMLElement) {
+    if (root.dataset.shareReady === "true") return;
+    root.dataset.shareReady = "true";
+
+    const dialog = root.querySelector<HTMLDialogElement>("[data-share-dialog]");
+    const titleEl = root.querySelector<HTMLElement>("[data-share-dialog-title]");
+    const descriptionEl = root.querySelector<HTMLElement>(
+      "[data-share-dialog-description]"
+    );
+    const actionsWrap = root.querySelector<HTMLElement>("[data-share-dialog-actions]");
+    const feedbackEl = root.querySelector<HTMLElement>("[data-share-feedback]");
+    const qrWrap = root.querySelector<HTMLElement>("[data-share-qrcode-wrap]");
+    const qrImage = root.querySelector<HTMLImageElement>("[data-share-qrcode]");
+    const closeButton = root.querySelector<HTMLButtonElement>("[data-share-close]");
+
+    if (
+      !dialog ||
+      !titleEl ||
+      !descriptionEl ||
+      !actionsWrap ||
+      !feedbackEl ||
+      !qrWrap ||
+      !qrImage ||
+      !closeButton
+    ) {
+      return;
+    }
+
+    const shareDialog = dialog;
+    const shareTitle = titleEl;
+    const shareDescription = descriptionEl;
+    const shareActionsWrap = actionsWrap;
+    const shareFeedback = feedbackEl;
+    const shareQrWrap = qrWrap;
+    const shareQrImage = qrImage;
+    const shareCloseButton = closeButton;
+
+    const payload = createSharePayload({
+      title: root.dataset.shareTitle ?? document.title,
+      description: root.dataset.shareDescription ?? "",
+      url: root.dataset.shareUrl ?? window.location.href,
+      ogImageUrl: root.dataset.shareOgImage || undefined,
+    });
+
+    const placeholderFile =
+      typeof File === "function"
+        ? [new File(["share"], "share-card.png", { type: "image/png" })]
+        : [];
+
+    const supportsSystemShare = typeof navigator.share === "function";
+    const supportsFileShare =
+      placeholderFile.length > 0 &&
+      isFileShareSupported(navigator, placeholderFile);
+
+    async function renderQrCode() {
+      if (shareQrImage.dataset.loaded === "true") return;
+      shareQrImage.src = await QRCode.toDataURL(payload.url, {
+        margin: 1,
+        width: 220,
+        color: { dark: "#111111", light: "#ffffff" },
+      });
+      shareQrImage.dataset.loaded = "true";
+    }
+
+    async function runSystemShare() {
+      if (!supportsSystemShare) {
+        shareFeedback.textContent = "当前浏览器不支持系统分享。";
+        return;
+      }
+
+      try {
+        if (payload.ogImageUrl && supportsFileShare) {
+          const file = await createOgImageFile(payload.ogImageUrl);
+          await navigator.share({
+            title: payload.title,
+            text: [payload.description, payload.url].filter(Boolean).join("\n"),
+            files: [file],
+          });
+        } else {
+          await navigator.share({
+            title: payload.title,
+            text: payload.description,
+            url: payload.url,
+          });
+        }
+        shareDialog.close();
+      } catch (error) {
+        if (!(error instanceof Error) || error.name !== "AbortError") {
+          shareFeedback.textContent =
+            "系统分享没有完成，你也可以改用复制链接或二维码。";
+        }
+      }
+    }
+
+    async function runShareImage() {
+      if (!payload.ogImageUrl) {
+        shareFeedback.textContent = "当前文章没有可用的卡片图。";
+        return;
+      }
+
+      try {
+        await downloadOgImage(payload.ogImageUrl);
+        shareFeedback.textContent = "卡片图已经开始下载。";
+      } catch {
+        shareFeedback.textContent = "卡片图下载失败，请稍后再试。";
+      }
+    }
+
+    async function handleDialogAction(actionId: ShareActionId) {
+      shareFeedback.textContent = "";
+
+      if (actionId === "system-share") {
+        await runSystemShare();
+        return;
+      }
+
+      if (actionId === "share-image") {
+        await runShareImage();
+        return;
+      }
+
+      if (actionId === "copy-link") {
+        await copyText(payload.url);
+        shareFeedback.textContent = "链接已复制。";
+        return;
+      }
+
+      shareQrWrap.hidden = false;
+      await renderQrCode();
+    }
+
+    function openDialog(target: ShareTarget) {
+      const dialogContent = getShareDialogContent(target, isWechatBrowser());
+      const actions = getFallbackActions(target, { supportsSystemShare });
+
+      shareTitle.textContent = dialogContent.title;
+      shareDescription.textContent = dialogContent.description;
+      shareFeedback.textContent = "";
+      shareQrWrap.hidden = true;
+
+      shareActionsWrap.replaceChildren(
+        ...actions.map(action => {
+          const button = createActionButton(action.label, action.id);
+          button.addEventListener("click", () => {
+            void handleDialogAction(action.id);
+          });
+          return button;
+        })
+      );
+
+      if (!shareDialog.open) {
+        shareDialog.showModal();
+      }
+    }
+
+    root
+      .querySelectorAll<HTMLButtonElement>("[data-share-target]")
+      .forEach(button => {
+        button.addEventListener("click", () => {
+          const target = button.dataset.shareTarget as ShareTarget | undefined;
+          if (!target) return;
+          openDialog(target);
+        });
+      });
+
+    shareCloseButton.addEventListener("click", () => shareDialog.close());
+    shareDialog.addEventListener("click", event => {
+      if (event.target === shareDialog) {
+        shareDialog.close();
+      }
+    });
+  }
+
+  function setupShareLinks() {
+    document
+      .querySelectorAll<HTMLElement>("[data-share-root]")
+      .forEach(root => void setupShareRoot(root));
+  }
+
+  setupShareLinks();
+  document.addEventListener("astro:page-load", setupShareLinks);
+</script>

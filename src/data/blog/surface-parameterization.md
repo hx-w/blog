@@ -1,0 +1,123 @@
+---
+title: "曲面参数化概述"
+pubDatetime: 2022-09-14T00:08:12.000Z
+tags: ["graphics", "paper"]
+description: "前言 对于如何确定本篇文章的内容涵盖范围这个问题，我想了很久，最终打算从最基本的什么是形状（shape） 这个问题谈起。  形状的本质 在拓扑相关的理论中，形状是指维流形（manifold）在维流形中的嵌套。 流形是连续的，详细的定义也较为复杂，可以从以下两点来辅助理解流形的概念： 1.  维流形的..."
+---
+
+
+## 前言
+
+对于如何确定本篇文章的内容涵盖范围这个问题，我想了很久，最终打算从最基本的**什么是形状（shape）** 这个问题谈起。
+
+<!--more-->
+
+## 形状的本质
+
+在拓扑相关的理论中，**形状**是指$n-1$维流形（manifold）在$n$维流形中的嵌套。
+
+流形是连续的，详细的定义也较为复杂，可以从以下两点来辅助理解流形的概念：
+
+1. $n$ 维流形的局部与 $\mathbb R^n$ 等价，例如：曲面（二维流形）的局部是二维平面。
+2. 对流形进行网格剖分，得到的离散流形除去边缘边之外，其他边有且仅有两个面与之相邻。
+
+所以我们可以认为，在 $\mathbb R^n$ 或更高维欧式空间中观测不同 $n-1$维流形的嵌套，就是在观测不同的形状。
+
+---
+
+更严谨的，对于一个向量函数，可以表达为 $f: \mathbb {R}^n \mapsto \mathbb {R}^m$.
+
+我们令 $\vec x = \left( x_1,\, \dots,\, x_n \right)^T \in \mathbb R^n$， $\vec y = \left(y_1,\, \dots,\, y_m \right)^T \in \mathbb R^m$，故：
+
+$$
+\vec y = f(\vec x) \implies
+\begin{cases}
+y_1 = f_1(x_1, \, \dots,\, x_n) \\[2ex]
+y_i = f_i(x_1, \, \dots,\, x_n) \\[2ex]
+y_m = f_m(x_1, \, \dots,\, x_n)
+\end{cases}
+$$
+
+假设 $f$ 是可微的，在自变量任意一点的邻域中，我们有（一阶泰勒展开）：
+
+$$
+\begin{cases}
+\Delta y_1 = \frac{\partial f_1}{\partial x_1} \Delta x_1 + \dots + \frac{\partial f_1}{\partial x_j} \Delta x_j + \dots + \frac{\partial f_1}{\partial x_n} \Delta x_n \\[2ex]
+\Delta y_i = \frac{\partial f_i}{\partial x_1} \Delta x_1 + \dots + \frac{\partial f_i}{\partial x_j} \Delta x_j + \dots + \frac{\partial f_i}{\partial x_n} \Delta x_n \\[2ex]
+\Delta y_1 = \frac{\partial f_m}{\partial x_1} \Delta x_1 + \dots + \frac{\partial f_m}{\partial x_j} \Delta x_j + \dots + \frac{\partial f_m}{\partial x_n} \Delta x_n
+\end{cases}
+$$
+
+写成矩阵形式
+
+$$
+\begin{pmatrix}
+\Delta y_1 \\[2ex]
+\dots \\[2ex]
+\Delta y_i \\[2ex]
+\dots \\[2ex]
+\Delta y_m
+\end{pmatrix}
+=
+\begin{pmatrix}
+\frac{\partial f_1}{\partial x_1} & \dots & \frac{\partial f_1}{\partial x_j} & \dots & \frac{\partial f_1}{\partial x_n} \\[2ex]
+\dots & \dots & \dots & \dots & \dots \\[2ex]
+\frac{\partial f_i}{\partial x_1} & \dots & \frac{\partial f_i}{\partial x_j} & \dots & \frac{\partial f_i}{\partial x_n} \\[2ex]
+\dots & \dots & \dots & \dots & \dots \\[2ex]
+\frac{\partial f_m}{\partial x_1} & \dots & \frac{\partial f_m}{\partial x_j} & \dots & \frac{\partial f_m}{\partial x_n}
+\end{pmatrix}
+\begin{pmatrix}
+\Delta x_1 \\[2ex]
+\dots \\[2ex]
+\Delta x_j \\[2ex]
+\dots \\[2ex]   
+\Delta x_n \\[2ex]
+\end{pmatrix}
+$$
+
+中间的系数矩阵就是$m \times n$的雅克比（Jacobian）矩阵，简化写作：
+$$
+\Delta \vec y = \mathbf J_{m\times n} \,\Delta \vec x
+$$
+
+观察映射$f$的雅可比矩阵：
+
+- 矩阵中第 $i$ 行 表述为第 $i$ 个映射 $f_i : \mathbb R^n \mapsto \mathbb R$ 的**梯度（gradient）**
+  $$
+  \nabla f_i = \left(\frac{\partial f_i}{\partial x_1},\, \dots, \, \frac{\partial f_i}{\partial x_j},\, \dots,\, \frac{\partial f_i}{\partial x_n} \right)
+  $$
+
+- 矩阵中第 $j$ 列 表述为映射沿 $x_j$ 方向的**切向量（tangent vector）**
+  $$
+  \frac{d\,(\vec y)}{d\, x_j} = \left(\frac{\partial f_1}{\partial x_j},\, \dots,\, \frac{\partial f_i}{\partial x_j},\, \dots,\, \frac{\partial f_m}{\partial x_j} \right)^T
+  $$ 
+  
+  也可以理解为一个**一维流形：** $\mathbb R \mapsto \mathbb R^m$
+
+对不同 $n$ 和 $m$，$\Delta \vec y = \mathbf J_{m \times n} \, \Delta \vec  x$ 可以表述不同含义，总体上：
+
+- 若 $m > n$ ，因变量维度比自变量维度大，那么以上公式表述了低维流形在高维空间中的嵌套，即形状。
+- 若 $m < n$ ，因变量维度比自变量维度小，那么以上公式表述的是高维流形向低维空间的投影。
+- 若 $m = n$ ，则是表述的线性变换，例如旋转、缩放。
+
+> 值得注意的是，$\vec y = f(\vec x)$ 在局部等价于 $\Delta \vec y = \mathbf J_{m \times n} \, \Delta \vec {x}$，而后者可以表述线性变换，前者通过与后者局部等价，可以表述非线性变换。
+
+特别的：
+
+| $m$ | $n$ | presents |
+|:--:|:--:|:--:|
+|1|1| 数到数的映射 |
+|2 | 1| 平面上的曲线 |
+|1 | 2| 二元函数；灰度图；二维流形向一维空间的投影|
+|2 | 2| 线性变换：旋转、缩放、剪切|
+
+## 二维流形
+
+对形状有更深的理解之后，我们再来讨论二维流形。
+
+**为什么是二维流形？**
+
+因为人类只能在三维空间中去观察，故能直接观察到的最复杂的形状就是二维流形在三维空间中的嵌套，故着重研究二维流形是有意义的。
+
+> 并不是所有图形都是流形，但是非流形都可以通过局部流形的拼接表述出来，所以我们只关注流形的特性。
+

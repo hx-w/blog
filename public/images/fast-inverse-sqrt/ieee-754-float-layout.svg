@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="260" viewBox="0 0 1200 260" role="img" aria-labelledby="title desc">
+  <title id="title">IEEE 754 单精度浮点数位布局</title>
+  <desc id="desc">32 位浮点数由 1 位符号位、8 位指数位和 23 位尾数位组成。</desc>
+  <rect width="1200" height="260" fill="#faf7f0"/>
+  <g font-family="Georgia, 'Noto Serif SC', serif" fill="#1f2937">
+    <text x="60" y="56" font-size="34" font-weight="700">IEEE 754 单精度浮点数（32-bit）</text>
+    <text x="60" y="96" font-size="20">1 bit Sign + 8 bit Exponent + 23 bit Fraction / Mantissa</text>
+  </g>
+  <g transform="translate(60 132)">
+    <rect x="0" y="0" width="90" height="72" fill="#d67c4a" rx="10"/>
+    <rect x="96" y="0" width="312" height="72" fill="#d9b44a" rx="10"/>
+    <rect x="414" y="0" width="666" height="72" fill="#6c8f6b" rx="10"/>
+    <g font-family="Arial, 'Noto Sans SC', sans-serif" text-anchor="middle" fill="#111827">
+      <text x="45" y="30" font-size="18" font-weight="700">Sign</text>
+      <text x="45" y="55" font-size="16">1 bit</text>
+      <text x="252" y="30" font-size="18" font-weight="700">Exponent</text>
+      <text x="252" y="55" font-size="16">8 bits</text>
+      <text x="747" y="30" font-size="18" font-weight="700">Fraction / Mantissa</text>
+      <text x="747" y="55" font-size="16">23 bits</text>
+    </g>
+    <g font-family="Arial, 'Noto Sans SC', sans-serif" font-size="14" fill="#374151">
+      <text x="0" y="102">31</text>
+      <text x="96" y="102">30</text>
+      <text x="392" y="102">23</text>
+      <text x="1060" y="102">0</text>
+    </g>
+  </g>
+</svg>
