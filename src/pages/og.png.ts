@@ -5,7 +5,7 @@ const fallbackImagePath = new URL("../../public/astropaper-og.jpg", import.meta.
 
 export const GET: APIRoute = async () => {
   const buffer = await readFile(fallbackImagePath);
-  return new Response(buffer, {
+  return new Response(new Uint8Array(buffer), {
     headers: { "Content-Type": "image/jpeg" },
   });
 };
