@@ -62,7 +62,6 @@
 blog/
 ├── public/                          # 静态资源目录
 │   ├── favicon.svg                  # 站点图标
-│   ├── astropaper-og.jpg            # 默认社交分享预览图
 │   └── pagefind/                    # 搜索索引（构建时生成）
 │
 ├── src/
@@ -383,7 +382,6 @@ html[data-theme="dark"] {
 | 文件 | 用途 | 推荐规格 |
 |------|------|----------|
 | public/favicon.svg | 站点图标 | SVG 格式 |
-| public/astropaper-og.jpg | 社交分享预览图 | 1200x630px |
 
 ---
 

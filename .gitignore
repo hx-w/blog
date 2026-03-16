@@ -30,3 +30,5 @@ public/pagefind
 .npm-cache
 
 docs/plans/
+
+.claude

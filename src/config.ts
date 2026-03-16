@@ -4,7 +4,7 @@ export const SITE = {
   profile: "https://github.com/hx-w",
   desc: "口腔医疗设计技术、工程与创业笔记",
   title: "Carol's Blog",
-  ogImage: "astropaper-og.jpg",
+  ogImage: "",
   lightAndDarkMode: true,
   postPerIndex: 4,
   postPerPage: 4,
