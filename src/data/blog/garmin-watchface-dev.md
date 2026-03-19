@@ -6,7 +6,7 @@ tags: ["tutorial", "tools"]
 draft: false
 ---
 
-最近想给Garmin手表装一个好看的表盘，在GitHub上发现了[Segment34](https://github.com/hurricane312/Segment34)这个开源项目——采用复古的34段数码管显示风格，集成了心率、天气、月相等多种数据，视觉上非常独特。
+最近想给Garmin手表装一个好看的表盘，在GitHub上发现了[Segment34](https://github.com/ludw/Segment34mkII)这个开源项目——采用复古的34段数码管显示风格，集成了心率、天气、月相等多种数据，视觉上非常独特。
 
 既然是开源项目，正好可以借着阅读源码的机会，系统梳理一下Garmin表盘开发的完整流程。
 
@@ -221,7 +221,7 @@ function onUpdate(dc as Dc) as Void {
 
 ## 以Segment34为例学习表盘开发
 
-[Segment34](https://github.com/hurricane312/Segment34)是GitHub上的一个开源Garmin表盘项目，作者hurricane312采用复古的34段数码管显示风格，视觉效果非常出色。这篇文章以它作为学习案例，分析一个成熟表盘项目是如何组织的。
+[Segment34](https://github.com/ludw/Segment34mkII)是GitHub上的一个开源Garmin表盘项目，作者hurricane312采用复古的34段数码管显示风格，视觉效果非常出色。这篇文章以它作为学习案例，分析一个成熟表盘项目是如何组织的。
 
 ### 功能特性
 
@@ -555,7 +555,6 @@ function onUpdate(dc as Dc) as Void {
 
 如果想基于Segment34二次开发，可以直接fork项目修改。如果从零开始，建议先用VS Code的Connect IQ扩展创建模板项目，再逐步添加功能。
 
-Segment34项目地址：[github.com/hurricane312/Segment34](https://github.com/hurricane312/Segment34)
 
 ## 参考资料
 
