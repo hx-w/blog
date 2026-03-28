@@ -128,10 +128,9 @@ const payload = createSharePayload({
     isFileShareSupported,
   } from "@/utils/share";
 
-  type ShareTarget = "wechat" | "xiaohongshu";
+  type ShareTarget = "wechat";
   type ShareActionId =
     | "system-share"
-    | "share-image"
     | "copy-link"
     | "show-qrcode";
 
@@ -164,21 +163,6 @@ const payload = createSharePayload({
       "rounded-full border border-border px-4 py-2 text-sm font-medium hover:text-accent";
     button.textContent = label;
     return button;
-  }
-
-  async function downloadOgImage(ogImageUrl: string) {
-    const response = await fetch(ogImageUrl);
-    if (!response.ok) {
-      throw new Error("下载卡片图失败");
-    }
-
-    const blob = await response.blob();
-    const downloadUrl = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = downloadUrl;
-    anchor.download = "share-card.png";
-    anchor.click();
-    URL.revokeObjectURL(downloadUrl);
   }
 
   async function setupShareRoot(root: HTMLElement) {
@@ -275,30 +259,11 @@ const payload = createSharePayload({
       }
     }
 
-    async function runShareImage() {
-      if (!payload.ogImageUrl) {
-        shareFeedback.textContent = "当前文章没有可用的卡片图。";
-        return;
-      }
-
-      try {
-        await downloadOgImage(payload.ogImageUrl);
-        shareFeedback.textContent = "卡片图已经开始下载。";
-      } catch {
-        shareFeedback.textContent = "卡片图下载失败，请稍后再试。";
-      }
-    }
-
     async function handleDialogAction(actionId: ShareActionId) {
       shareFeedback.textContent = "";
 
       if (actionId === "system-share") {
         await runSystemShare();
-        return;
-      }
-
-      if (actionId === "share-image") {
-        await runShareImage();
         return;
       }
 

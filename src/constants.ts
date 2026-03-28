@@ -4,7 +4,6 @@ import IconGitHub from "@/assets/icons/IconGitHub.svg";
 import IconBilibili from "@/assets/icons/IconBilibili.svg";
 import IconDeepShape from "@/assets/icons/IconDeepShape.svg";
 import IconWechat from "@/assets/icons/IconWechat.svg";
-import IconXiaohongshu from "@/assets/icons/IconXiaohongshu.svg";
 
 interface Social {
   name: string;
@@ -26,7 +25,7 @@ interface ShareUrlLink extends ShareBase {
 
 interface ShareActionLink extends ShareBase {
   type: "action";
-  action: "wechat" | "xiaohongshu";
+  action: "wechat";
 }
 
 export type ShareLink = ShareUrlLink | ShareActionLink;
@@ -65,13 +64,6 @@ export const SHARE_LINKS: ShareLink[] = [
     action: "wechat",
     linkTitle: "分享到微信",
     icon: IconWechat,
-  },
-  {
-    name: "Xiaohongshu",
-    type: "action",
-    action: "xiaohongshu",
-    linkTitle: "分享到小红书",
-    icon: IconXiaohongshu,
   },
   {
     name: "Mail",
