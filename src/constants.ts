@@ -2,7 +2,6 @@ import type { Props } from "astro";
 import IconMail from "@/assets/icons/IconMail.svg";
 import IconGitHub from "@/assets/icons/IconGitHub.svg";
 import IconBilibili from "@/assets/icons/IconBilibili.svg";
-import IconDeepShape from "@/assets/icons/IconDeepShape.svg";
 import IconWechat from "@/assets/icons/IconWechat.svg";
 
 interface Social {
@@ -36,12 +35,6 @@ export const SOCIALS: Social[] = [
     href: "https://github.com/hx-w",
     linkTitle: "访问我的 GitHub",
     icon: IconGitHub,
-  },
-  {
-    name: "DeepShape",
-    href: "https://deepshape.cn",
-    linkTitle: "访问 DeepShape",
-    icon: IconDeepShape,
   },
   {
     name: "Bilibili",
