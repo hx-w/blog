@@ -1,6 +1,6 @@
 ---
 title: "蜜蜂与蜂群"
-pubDatetime: 2026-09-14T09:00:00.000Z
+pubDatetime: 2026-09-14T00:30:00.000Z
 description: "agent已经事实上取代了两年前几乎所有的我需要参与的工作。那接下来我和agent的工作模式，也许需要一次重构"
 tags: ["note"]
 ---
