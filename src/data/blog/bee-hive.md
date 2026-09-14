@@ -1,6 +1,7 @@
 ---
 title: "蜜蜂与蜂群"
 pubDatetime: 2026-09-14T00:30:00.000Z
+modDatetime: 2026-09-14T02:59:00.000Z
 description: "agent已经事实上取代了两年前几乎所有的我需要参与的工作。那接下来我和agent的工作模式，也许需要一次重构"
 tags: ["note"]
 ---
@@ -26,8 +27,7 @@ tags: ["note"]
 
 ## 前沿实践
 
-**Orca**
-https://github.com/stablyai/orca
+[**Orca**](https://github.com/stablyai/orca)
 
 ADE，端到端集成
 
@@ -38,8 +38,7 @@ ADE，端到端集成
 3. 与harness深度集成，有orca专属的hook和skills。我遇到过codex安装orca的hooks之后，每打开codex tui都需要手动允许hook权限的问题，需要添加启动参数才能解决
 4. 功能性问题迭代较慢，体量太大，需要兼顾可视效果、键鼠交互和功能需求，迭代成本高。我频繁遇到过orca创建worktree失败的问题，以及整屏UI乱码的问题。
 
-**herdr**
-https://github.com/herdrdev/herdr
+[**herdr**](https://github.com/herdrdev/herdr)
 
 herdr是一个后台保活的agent workspace管理工具(tui/cli)
 
@@ -48,15 +47,15 @@ herdr是一个后台保活的agent workspace管理工具(tui/cli)
 1. cli功能完备（agent原生），可以实现agent操作herdr来控制整个workspace布局，比如新增一个denta worktree的session视图，来处理xxx问题。
 2. 后台保活，关terminal/ 关机重启后 自动恢复workspace布局
 3. 无侵入性，不对harness添加hook，以及skill，比orca轻量。
-4. 社区友好，插件接口完善，可以针对herdr制作插件，让所有harness都受益，避免了codex 无法享受到pi / claude code的插件的尴尬。比如 web+PWA 来转发herdr的https://github.com/AltanS/collie ，一定程度上实现了mobile app的能力。
+4. 社区友好，插件接口完善，可以针对herdr制作插件，让所有harness都受益，避免了codex 无法享受到pi / claude code的插件的尴尬。比如 web+PWA 来转发herdr的[collie](https://github.com/AltanS/collie) ，一定程度上实现了mobile app的能力。
 5. 学习成本高，类tmux的交互逻辑，想要熟练使用需要熟悉新的快捷键，否则在tui上键鼠交互很不直观
 
 herdr最新版本支持 machine add xxx  功能，可以将远程主机上的agent 放到当前主机上的herdr里统一管理会话。
-orca也支持（https://www.onorca.dev/docs/ssh）只是还没用过
+[orca也支持](https://www.onorca.dev/docs/ssh)只是还没用过
 
 不过这个功能有一个问题，只支持ssh协议，连接远程主机需要暴露密钥，所以定位上是 个人的多设备agent工作区管理。
 
-herdr官方应该也意识到这个remote多机方案的局限性，准备搞herdr cloud 云端方案解决权限管理等问题（https://herdr.dev/cloud/ ）但是还不知道啥时候上线，而且可能会收费（据说他们刚融了一笔钱，有商业化的趋势）
+herdr官方应该也意识到这个remote多机方案的局限性，准备搞 [herdr cloud 云端方案](https://herdr.dev/cloud) 解决权限管理等问题，但是还不知道啥时候上线，而且可能会收费（据说他们刚融了一笔钱，有商业化的趋势）
 
 ## 我的方案
 
